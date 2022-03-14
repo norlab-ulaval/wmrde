@@ -830,7 +830,7 @@ void test_wheelJacobians() {
 	WmrModel mdl;
 	Real state[MAXNS];
 	
-	zoe(mdl,state,0);
+	warthog(mdl,state,0);
 	//rocky(mdl,state,0);
 
 	//get from WmrModel

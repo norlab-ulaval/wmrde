@@ -87,6 +87,7 @@ SET(SRCS
 #  animate/WmrAnimation.cpp
   demo/rockymodel.cpp
 #  demo/rockyscene.cpp
+  demo/warthogmodel.cpp
   demo/talonmodel.cpp
 #  demo/talonscene.cpp
   demo/terrains.cpp
