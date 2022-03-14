@@ -8,6 +8,8 @@
 #include <iomanip>
 #include <time.h>
 #include <vector>
+#include <chrono>
+#include <ctime>
 //#include <memory> //for unique_ptr, C++11 only
 
 #include <Eigen/Dense>
