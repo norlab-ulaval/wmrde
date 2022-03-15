@@ -38,6 +38,9 @@ int wheelJacobians(const WmrModel& mdl, const HomogeneousTransform HT_world[], c
 				if (dof_type < 3) { // 0,1,2 revolute
 					//cross rotation axis with translation vector (from frame origin to contact pt)
 					const Real* ax = HT_world[fi] + dof_type*SIZEVEC3; //rotation axis
+
+//                    std::cout << fi << std::endl;
+//                    printMatReal(4,4,HT_world[fi],-1,-1);
 					
 					addmVec3(contacts[wno].HT_world+COL3, -1, HT_world[fi]+COL3, r);
 					crossVec3(ax, r, A+S2I(row,vi,nc));

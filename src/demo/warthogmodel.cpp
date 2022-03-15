@@ -141,7 +141,7 @@ void warthog(WmrModel& mdl, Real state[], Real qvel[]) {
 
 	//initialize the state vector
 	setEuler(DEGTORAD(0),DEGTORAD(0),DEGTORAD(0),euler);
-	setVec3(1.1, 0.0, (Wr+k6+k3), pos);
+	setVec3(0.0, 0.0, (Wr+k6+k3), pos);
 
 #if WMRSIM_USE_QUATERNION
 	eulerToQuat(euler,orient);

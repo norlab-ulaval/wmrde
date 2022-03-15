@@ -877,7 +877,7 @@ void test_wheelJacobians() {
 	
 	if (1) {
 		//time it
-		int n= (int) 1e6;
+		int n= (int) 1;
 //		timeval t0, t1;
 
         auto t0 = std::chrono::system_clock::now();
