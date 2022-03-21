@@ -39,25 +39,26 @@ int wheelJacobians(const WmrModel& mdl, const HomogeneousTransform HT_world[], c
 					//cross rotation axis with translation vector (from frame origin to contact pt)
 					const Real* ax = HT_world[fi] + dof_type*SIZEVEC3; //rotation axis
 
-//                    std::cout << fi << std::endl;
-//                    printMatReal(4,4,HT_world[fi],-1,-1);
+//
 					
 					addmVec3(contacts[wno].HT_world+COL3, -1, HT_world[fi]+COL3, r);
 					crossVec3(ax, r, A+S2I(row,vi,nc));
-				} else { // 3,4,5 prismatic
-					const Real* ax = HT_world[fi] + (dof_type-3)*SIZEVEC3;
-					copyVec3(ax, A+S2I(row,vi,nc));
-				}
-				fi = frames[fi].parent_ind;
-			}
+                } else { // 3,4,5 prismatic
+                    const Real* ax = HT_world[fi] + (dof_type-3)*SIZEVEC3;
+                    copyVec3(ax, A+S2I(row,vi,nc));
+                }
+                fi = frames[fi].parent_ind;
+            }
 
-			//body joint, fi=0
-			addmVec3(contacts[wno].HT_world+COL3, -1, HT_world[0]+COL3, r);
-			for (int ci=0; ci<3; ci++) { //column index
-				const Real* ax = HT_world[0] + ci*SIZEVEC3; //axis
-				crossVec3(ax, r, A + S2I(row,ci+VI_ANG,nc)); //angular
-				copyVec3(ax, A + S2I(row,ci+VI_LIN,nc)); //linear
-			}
+            //body joint, fi=0
+            addmVec3(contacts[wno].HT_world+COL3, -1, HT_world[0]+COL3, r);
+            for (int ci=0; ci<3; ci++) { //column index
+                const Real* ax = HT_world[0] + ci*SIZEVEC3; //axis
+                crossVec3(ax, r, A + S2I(row,ci+VI_ANG,nc)); //angular
+                copyVec3(ax, A + S2I(row,ci+VI_LIN,nc)); //linear
+            }
+//            std::cout << wno << std::endl;
+//            printMatReal(12,12,A,-1,-1);
 
 			//rotate into contact frame coords
 			for (int vi=0; vi<nv; vi++) {
@@ -454,7 +455,7 @@ void initTerrainContact( const WmrModel mdl, const SurfaceVector& surfaces, Cont
 	//TODO, handle quaternions
 	assert(!WMRSIM_USE_QUATERNION);
 
-	
+	std::cout << 1 << std::endl;
 	const int MAXNP = WmrModel::MAXNT * ContactGeom::MAXNP; //max number of contact points
 	//max size of:
 	const int MAXNS = NUMSTATE(WmrModel::MAXNF); //state vector
@@ -483,7 +484,7 @@ void initTerrainContact( const WmrModel mdl, const SurfaceVector& surfaces, Cont
 	isfree[SI_POS+2] = true; //z
 	for (int fi=1; fi < nf; fi++) 
 		isfree[TOSTATEI(fi)] = !frames[fi].isfixed;
-
+    std::cout << 2 << std::endl;
 	//allocate vars needed outside of fCost, fGradient
 	HomogeneousTransform HT_parent[WmrModel::MAXNF + WmrModel::MAXNW];
 	HomogeneousTransform HT_world[WmrModel::MAXNF + WmrModel::MAXNW];
@@ -505,7 +506,7 @@ void initTerrainContact( const WmrModel mdl, const SurfaceVector& surfaces, Cont
 	Real x[MAXNS];
 	Real cost;
 	Real grad[MAXNS];
-
+    std::cout << 3 << std::endl;
 	//more
 	int iter;
 	
@@ -548,7 +549,7 @@ void initTerrainContact( const WmrModel mdl, const SurfaceVector& surfaces, Cont
 			}
 		}
 		ne = npic;
-		
+        std::cout << 5 << std::endl;
 		//additional (holonomic) joint constraints
 		int njc = mdl.get_njc();
 		if (njc > 0) {
@@ -565,7 +566,7 @@ void initTerrainContact( const WmrModel mdl, const SurfaceVector& surfaces, Cont
 
 	};
 	cost = initTerrainContactCost(x);
-
+    std::cout << 6 << std::endl;
 	//lambda closure, requires C++11
 	auto initTerrainContactGradient = [&] ( Real grad_[] ) mutable {
 		//must evaluate cost function before this
@@ -597,7 +598,7 @@ void initTerrainContact( const WmrModel mdl, const SurfaceVector& surfaces, Cont
 			int ri = i*3 + 2;
 			copyMatRow(ncc,nv,ri,A, ne,i,derrdot_dqvel);
 		}
-
+        std::cout << 7 << std::endl;
 		if (njc > 0) {
 			//copy Jc to derrdot_dqvel
 			setMatBlock(ne,npic,0,njc,VI_JR,0.0,derrdot_dqvel); //zeros for body DOF
@@ -622,7 +623,7 @@ void initTerrainContact( const WmrModel mdl, const SurfaceVector& surfaces, Cont
 				nfree++;
 			}
 		}
-
+        std::cout << 8 << std::endl;
 		//compute gradient
 		for (int ci=0; ci < nfree; ci++) { //col index
 			grad_[ci] = 2*dotVec(ne,err,derr_dx+S2I(0,ci,ne));
@@ -637,9 +638,9 @@ void initTerrainContact( const WmrModel mdl, const SurfaceVector& surfaces, Cont
 		//std::cout << "grad_=\n"; printMatReal(1,nfree,grad_,-1,-1); std::cout << std::endl;
 	};
 
-
+    std::cout << 9 << std::endl;
 	for (iter=0; iter < max_iter; iter++) {
-		
+        std::cout << "a" << std::endl;
 		
 		//std::cout << "iter= " << iter << ", cost= " << cost << std::endl; //DEBUGGING
 		//DEBUGGING, print contact height errors
@@ -656,16 +657,16 @@ void initTerrainContact( const WmrModel mdl, const SurfaceVector& surfaces, Cont
 		if (fabs(cost - cost_prev) < dcost_tol) 
 			break;
 		cost_prev = cost;
-
+        std::cout << "b" << std::endl;
 		if (iter==0)
 			initTerrainContactGradient(grad);
-
+        std::cout << "c" << std::endl;
 		//compute Hessian, H = 2*(derr_dx^T * derr_dx)
 		multMatTMat(ne, nfree, derr_dx, nfree, derr_dx, 2.0, Hess);
 
 		chol(nfree,Hess,HessL);
 		cholSolve(nfree,HessL,grad,p);
-
+        std::cout << "d" << std::endl;
 		mulcVec(nfree,-1.0,p); //negate
 
 		Real gradp = dotVec(nfree,grad,p);
@@ -673,10 +674,12 @@ void initTerrainContact( const WmrModel mdl, const SurfaceVector& surfaces, Cont
 			//gradient is zero at minimum, stop if close enough
 			break;
 		}
-
+        std::cout << "e" << std::endl;
 		Real alpha;
+        // BUG HERE SIGSEV
 		alpha = linesearch( nfree, p, 1.0, initTerrainContactCost, initTerrainContactGradient, x, cost, grad);
-
+        std::cout << 10 << std::endl;
+        std::cout << "f" << std::endl;
 		//DEBUGGING
 		//std::cout << "grad=\n"; printMatReal(1,nfree,grad,-1,-1); std::cout << std::endl;
 		//std::cout << "Hess=\n"; printMatReal(nfree,nfree,Hess,-1,-1); std::cout << std::endl;

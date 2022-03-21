@@ -19,10 +19,10 @@ int main(int argc, char *argv[]) //use this for console output
 	//test_stateToHT();
 	//test_qvelToQdot();
 
-	test_wheelJacobians();
+//	test_wheelJacobians();
 	//test_trackJacobians();
 	//test_forwardVelKin();
-	//test_initTerrainContact();
+	test_initTerrainContact();
 
 	//test_subtreeInertias();
 	//test_jointSpaceInertia();
