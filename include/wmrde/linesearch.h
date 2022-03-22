@@ -155,7 +155,7 @@ Real findRootBrents( Real a, Real b, Func fx, const Real tolx, const Real tolfx)
 template<typename Func1, typename Func2>
 Real linesearch( const int n, const Real p[], const Real alpha_max, Func1 fCost, Func2 fGradient, 
 				Real x[], Real& cost, Real grad[], ...) {
-
+//    std::cout << "e1" << std::endl;
 	const int MAXN = 20;
 	Real alpha=0; //for return
 
@@ -165,7 +165,7 @@ Real linesearch( const int n, const Real p[], const Real alpha_max, Func1 fCost,
 	const Real c1 = 1e-4;
 	const Real c2 = 0.9;
 
-	
+//    std::cout << "e2" << std::endl;
 	//back up at alpha=0
 	//grada: gradient of cost wrt alpha
 	Real x0[MAXN]; //x (alpha = 0);
@@ -175,7 +175,7 @@ Real linesearch( const int n, const Real p[], const Real alpha_max, Func1 fCost,
 		x0[i] = x[i]; //copy
 		grada_0 += grad[i]*p[i]; //dot product
 	}
-
+//    std::cout << "e3" << std::endl;
 
 	Real alpha_j, cost_j, grada_j;
 
@@ -183,17 +183,23 @@ Real linesearch( const int n, const Real p[], const Real alpha_max, Func1 fCost,
 	alpha_j = alpha_max;
 	for (int i=0; i<n; i++) 
 		x[i] = x[i] + alpha_j*p[i];
-
-	cost = fCost(x);
+//    std::cout << "e4" << std::endl;
+    // BUG HERE
+    cost = fCost(x);
+//    std::cout << "e41" << std::endl;
 	fGradient(grad);
+//    std::cout << "e42" << std::endl;
 
 	cost_j = cost;
 	grada_j = 0; 
-	for (int i=0; i<n; i++) 
-		grada_j += grad[i]*p[i]; //dot product
+	for (int i=0; i<n; i++)
+    {
+        grada_j += grad[i]*p[i]; //dot product
+    }
+
 
 	bool dozoom = false;
-
+//    std::cout << "e5" << std::endl;
 	Real alpha_hi, alpha_lo, cost_lo;
 	if (cost_j > cost_0 + c1*alpha_j*grada_0) { 
 		//decrease condition not satisfied
@@ -220,7 +226,7 @@ Real linesearch( const int n, const Real p[], const Real alpha_max, Func1 fCost,
 		}
 
 	}
-
+//    std::cout << "e6" << std::endl;
 	if (dozoom) {
 		while (true) {
 			if (fabs(alpha_hi-alpha_lo) < alpha_tol) {
@@ -264,7 +270,7 @@ Real linesearch( const int n, const Real p[], const Real alpha_max, Func1 fCost,
 			}
 		}
 	}
-
+//    std::cout << "e7" << std::endl;
 	return alpha;
 
 }

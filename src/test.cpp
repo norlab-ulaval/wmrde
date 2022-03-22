@@ -1077,8 +1077,9 @@ void test_initTerrainContact() {
 	//make WmrModel object
 	WmrModel mdl;
 	Real state[MAXNS];
-	
-	zoe(mdl,state,0);
+
+    warthog(mdl,state,0);
+//	zoe(mdl,state,0);
 	//rocky(mdl,state,0);
 	//talon(mdl,state,0); //TODO
 
@@ -1091,9 +1092,9 @@ void test_initTerrainContact() {
 	//terrain
 	SurfaceVector surfs;
 
-	//flat(surfs);
+	flat(surfs);
 	//ramp(surfs);
-	grid(surfs, ResourceDir() + std::string("gridsurfdata.txt") );
+//	grid(surfs, ResourceDir() + std::string("gridsurfdata.txt") ); // SIGSERV bug with grid surface
 
 	//init contact geometry
 	WheelContactGeom wcontacts[WmrModel::MAXNW];

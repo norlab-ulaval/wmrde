@@ -44,6 +44,7 @@ int surfacesDz(const SurfaceVector& surfaces, const Vec3 pt, Real& dz, Vec3 norm
 	for (int i=0; i<int(surfaces.size()); i++) { //loop over surfaces
 
 		//assumes in bounds for at least one surface
+        // BUG HERE SIGSEGV
 		loc = surfaces[i]->surfaceDz(pt,-1,dz_,ptr);
 
 		//NaN less than comparison behavior is different in Debug and Release configurations?!

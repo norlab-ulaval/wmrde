@@ -3,7 +3,7 @@
 //update WheelContactGeom by discretizing wheel surface into points, selecting the point for which dz is minimized
 void updateWheelContactGeomDiscretize(const SurfaceVector& surfaces, const HomogeneousTransform HT_wheel_to_world, const Real radius,  //input
 	WheelContactGeom& contact) { //output
-
+//    std::cout << "i1" << std::endl;
 	const int MAXNP = 180+1; //max number of points in discretization
 	
 	Real angles[MAXNP]; //possible contact angles
@@ -13,55 +13,66 @@ void updateWheelContactGeomDiscretize(const SurfaceVector& surfaces, const Homog
 	int surfinds[MAXNP]; //surface indices for all possible pts
 	int min_idx; //index of min value in deltazs
 	int loc = -1; //TODO
-
+//    std::cout << "i2" << std::endl;
 	Real xproj = HT_wheel_to_world[2+COL0]; //dot(world z axis, wheel x axis)
 	Real zproj = HT_wheel_to_world[2+COL2]; //dot(world z axis, wheel z axis)
 	Real mid = atan2(xproj,zproj); // middle of range of possible contact angles
 
 	Real rng = M_PI; //range
 	int np=18+1; //number of points
-
+//    std::cout << "i3" << std::endl;
 	//discretize an arc of the wheel circumference to possible contact points
 	linspace(mid-rng/2, mid+rng/2, np, angles);
 	for (int i=0; i < np; i++) {
 		contactAngleToPoint(radius, angles[i], pts_wheel[i]);
 		applyHT(HT_wheel_to_world, pts_wheel[i], pts_world[i]);
 	}
-
+//    std::cout << "i3" << std::endl;
 	//first step
 	for (int i=0; i<np; i++) {
 		surfinds[i] = surfacesDz(surfaces,pts_world[i],deltazs[i],0);
 	}
 	min_idx = findMin(np,deltazs);
-	
+//    std::cout << "i4" << std::endl;
 	int si = surfinds[min_idx];
 
 	if (1) {
 		//second step
-
+//        std::cout << "j1" << std::endl;
 		mid = angles[min_idx];
 		rng = M_PI/Real(np-1);
 		np = 10+1;
-
+//        std::cout << "j2" << std::endl;
 		linspace(mid-rng/2, mid+rng/2, np, angles);
 		for (int i=0; i<np; i++) {
+//            std::cout << i << std::endl;
+//            std::cout << "k1" << std::endl;
 			contactAngleToPoint(radius, angles[i], pts_wheel[i]);
-			applyHT(HT_wheel_to_world,pts_wheel[i],pts_world[i]);
-			surfaces[si]->surfaceDz(pts_world[i],loc,deltazs[i],0);
-		}
+//            std::cout << "k2" << std::endl;
+            applyHT(HT_wheel_to_world,pts_wheel[i],pts_world[i]);
+//            std::cout << "k3" << std::endl;
+//            std::cout << pts_world[i] << std::endl;
+//            std::cout << loc << std::endl;
+//            std::cout << deltazs[i] << std::endl;
+            surfaces[si]->surfaceDz(pts_world[i],loc,deltazs[i],0);
+//            std::cout << "k4" << std::endl;
+        }
+//        std::cout << "j3" << std::endl;
 		min_idx = findMin(np,deltazs);
 	}
-
+//    std::cout << "i5" << std::endl;
 	contact.dz = deltazs[min_idx];
 	contact.angle = angles[min_idx];
-
+//    std::cout << "i6" << std::endl;
 	Vec3 N_world, N_wheel; //normal vector
+//    std::cout << "i7" << std::endl;
 	surfaces[si]->surfaceNormal(pts_world[min_idx], loc, N_world);
-	multMatTVec3(HT_wheel_to_world, N_world, N_wheel); //rotate to wheel coords
-
+//    std::cout << "i8" << std::endl;
+    multMatTVec3(HT_wheel_to_world, N_world, N_wheel); //rotate to wheel coords
+//    std::cout << "i9" << std::endl;
 	HTContactToWheel(pts_wheel[min_idx], N_wheel, contact.HT_wheel ); //HT_contact_to_wheel
 	composeHT(HT_wheel_to_world, contact.HT_wheel, contact.HT_world ); //HT_contact_to_world
-	
+//    std::cout << "i10" << std::endl;
 }
 
 

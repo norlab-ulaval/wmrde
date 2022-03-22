@@ -24,13 +24,13 @@ int PlaneSurf::surfaceHeight(const Vec3 pt, int loc, Real& height) {
 }
 
 int PlaneSurf::surfaceDz(const Vec3 pt, int loc, Real& dz, Vec3 normal) {
-
+//    std::cout << "l1" << std::endl;
 	//dz = [a b c d]*[x y z 1]'
 	dz = pec[0]*pt[0] + pec[1]*pt[1] + pec[2]*pt[2] + pec[3];
-
+//    std::cout << "l2" << std::endl;
 	if (normal != 0)
 		copyVec3(pec,normal);
-
+//    std::cout << "l3" << std::endl;
 	return 0;
 }
 
