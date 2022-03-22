@@ -589,6 +589,7 @@ void initTerrainContact( const WmrModel mdl, const SurfaceVector& surfaces, Cont
 		Real derrdot_dqvel[MAXNE*MAXNV]; //Jacobian of d/dt err wrt qvel
 		Real derr_dstate[MAXNE*MAXNS]; //Jacobian of err wrt state
 
+
 		int njc = mdl.get_njc();
 		int npic = ne - njc; //number of points in contact
 		int ncc = 3*npic; //number of contact constraints (rows of A)
@@ -601,17 +602,22 @@ void initTerrainContact( const WmrModel mdl, const SurfaceVector& surfaces, Cont
 		else if (nt > 0)
 			trackJacobians(mdl, HT_world, tcontacts, A);
 
+
+
+//        printMatReal(12, 12, A, -1, -1);
+
 		//copy rows of A for z constraints to derrdot_dqvel
 		for (int i=0; i<npic; i++) { //point in contact number
 			int ri = i*3 + 2;
 			copyMatRow(ncc,nv,ri,A, ne,i,derrdot_dqvel);
 		}
-//        std::cout << 7 << std::endl;
+//        printMatReal(ne, nv, derrdot_dqvel, -1, -1);
 		if (njc > 0) {
 			//copy Jc to derrdot_dqvel
 			setMatBlock(ne,npic,0,njc,VI_JR,0.0,derrdot_dqvel); //zeros for body DOF
 			copyMatBlock(njc,0,0,njc,nj,Jc, ne,npic,VI_JR,derrdot_dqvel);
 		}
+//        printMatReal(ne, nv, derrdot_dqvel, -1, -1);
 	
 		//convert to derr_dstate
 		//TODO, eliminate temporary variables?
@@ -627,6 +633,7 @@ void initTerrainContact( const WmrModel mdl, const SurfaceVector& surfaces, Cont
 		int nfree=0;
 		for (int si=0; si < ns; si++) { //state index
 			if (isfree[si]) {
+                std::cout << si << std::endl;
 				copyMatCol(ne,si,derr_dstate, nfree,derr_dx);
 				nfree++;
 			}
@@ -638,12 +645,12 @@ void initTerrainContact( const WmrModel mdl, const SurfaceVector& surfaces, Cont
 		}
 
 		//DEBUGGING
-		//std::cout << "A=\n"; printMatReal(ncc,nv,A,-1,-1); std::cout << std::endl;
-		//std::cout << "Jc=\n"; printMatReal(njc,nj,Jc,-1,-1); std::cout << std::endl;
-		//std::cout << "derrdot_dqvel=\n"; printMatReal(ne,nv,derrdot_dqvel,-1,-1); std::cout << std::endl;
-		//std::cout << "derr_dstate=\n"; printMatReal(ne,ns,derr_dstate,-1,-1); std::cout << std::endl;
-		//std::cout << "derr_dx=\n"; printMatReal(ne,nfree,derr_dx,-1,-1); std::cout << std::endl;
-		//std::cout << "grad_=\n"; printMatReal(1,nfree,grad_,-1,-1); std::cout << std::endl;
+		std::cout << "A=\n"; printMatReal(ncc,nv,A,-1,-1); std::cout << std::endl;
+		std::cout << "Jc=\n"; printMatReal(njc,nj,Jc,-1,-1); std::cout << std::endl;
+		std::cout << "derrdot_dqvel=\n"; printMatReal(ne,nv,derrdot_dqvel,-1,-1); std::cout << std::endl;
+		std::cout << "derr_dstate=\n"; printMatReal(ne,ns,derr_dstate,-1,-1); std::cout << std::endl;
+		std::cout << "derr_dx=\n"; printMatReal(ne,nfree,derr_dx,-1,-1); std::cout << std::endl;
+		std::cout << "grad_=\n"; printMatReal(1,nfree,grad_,-1,-1); std::cout << std::endl;
 	};
 
 //    std::cout << 9 << std::endl;

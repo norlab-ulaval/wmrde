@@ -1080,7 +1080,7 @@ void test_initTerrainContact() {
 
     warthog(mdl,state,0);
 //	zoe(mdl,state,0);
-	//rocky(mdl,state,0);
+//	rocky(mdl,state,0);
 	//talon(mdl,state,0); //TODO
 
 	//get from WmrModel

@@ -287,8 +287,8 @@ void warthogConstraints( const WmrModel& mdl, const Real jd[], const Real jr[], 
 	Real c[], Real Jc[], Real f[], Real df_djd[], Real df_djr[]) { //outputs
 
 	//rocker joint indices
-	const int D1_ji = 1;
-	const int D2_ji = 4;
+	const int D1_ji = 0;
+	const int D2_ji = 3;
 
 	c[0] = jd[D1_ji] + jd[D2_ji]; //angles should be equal magnitude, opposite sign
 	
@@ -298,6 +298,7 @@ void warthogConstraints( const WmrModel& mdl, const Real jd[], const Real jr[], 
 
 	//init to zeros
 	setVec(nj,0.0,Jc);
+//    std::cout << nj << std::endl;
 
 	Jc[D1_ji] = 1.0;
 	Jc[D2_ji] = 1.0;

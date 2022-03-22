@@ -311,9 +311,8 @@ void rockyConstraints( const WmrModel& mdl, const Real jd[], const Real jr[], //
 
 	c[0] = jd[D1_ji] + jd[D2_ji]; //angles should be equal magnitude, opposite sign
 	
-	
 	const int nj = mdl.get_nf()-1; //number of joints
-	
+//    std::cout << nj << std::endl;
 
 	//init to zeros
 	setVec(nj,0.0,Jc);
