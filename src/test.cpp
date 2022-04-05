@@ -904,7 +904,8 @@ void test_trackJacobians() {
 	WmrModel mdl;
 	Real state[MAXNS];
 	
-	talon(mdl,state,0);
+	trackedWarthog(mdl,state,0);
+//    talon(mdl, state, 0);
 
 	//get from WmrModel
 	const int nt = mdl.get_nt();
@@ -981,9 +982,10 @@ void test_forwardVelKin() {
 	WmrModel mdl;
 	Real state[MAXNS];
 	
-	zoe(mdl,state,0);
+//	zoe(mdl,state,0);
 	//rocky(mdl,state,0);
 	//talon(mdl,state,0); //TODO
+    trackedWarthog(mdl,state,0);
 
 	//get from WmrModel
 	const int nw = mdl.get_nw();
@@ -1078,10 +1080,11 @@ void test_initTerrainContact() {
 	WmrModel mdl;
 	Real state[MAXNS];
 
-    warthog(mdl,state,0);
+//    warthog(mdl,state,0);
 //	zoe(mdl,state,0);
 //	rocky(mdl,state,0);
-	//talon(mdl,state,0); //TODO
+//	talon(mdl,state,0); //TODO
+    talon(mdl,state,0);
 
 	//get from WmrModel
 	const int nw = mdl.get_nw();

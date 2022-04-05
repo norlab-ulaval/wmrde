@@ -95,7 +95,7 @@ int trackJacobians(const WmrModel& mdl, const HomogeneousTransform HT_world[], c
 	int nc = 3*npic; //number of constraints (rows of A)
 	int row = 0; //row in A
 	
-	setMat(nc,nv,0.0,A); //init to zeros
+	setMat(nc,nv,0.0,A); //init to zeros SEEMS TO RESET CONTACT POINTS WHEN USING 4 TRACKS
 
 	//for indexing spatial vectors
 	const int ang = 0;

@@ -68,7 +68,7 @@ public:
 	//buffer sizes
 	static const int MAXNF = 13;		//max number of frames
 	static const int MAXNW = 6;			//max number of wheels (or sprockets)
-	static const int MAXNT = 2;			//max number of tracks (used to determine max number of contact points)
+	static const int MAXNT = 4;			//max number of tracks (used to determine max number of contact points)
 	static const int MAXNA = MAXNF-1;	//max number of actuated frames
 	static const int MAXNJC = 1;		//max number of (holonomic) joint constraints
 	static const int MAXNPAR = 20;		//max number of parameters

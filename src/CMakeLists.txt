@@ -88,6 +88,7 @@ SET(SRCS
   demo/rockymodel.cpp
 #  demo/rockyscene.cpp
   demo/warthogmodel.cpp
+  demo/trackedwarthogmodel.cpp
   demo/talonmodel.cpp
 #  demo/talonscene.cpp
   demo/terrains.cpp
