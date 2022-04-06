@@ -1084,7 +1084,7 @@ void test_initTerrainContact() {
 //	zoe(mdl,state,0);
 //	rocky(mdl,state,0);
 //	talon(mdl,state,0); //TODO
-    talon(mdl,state,0);
+    trackedWarthog(mdl,state,0);
 
 	//get from WmrModel
 	const int nw = mdl.get_nw();
@@ -1448,6 +1448,7 @@ void test_simulate() {
 //	zoe(mdl,state,qvel);
 	rocky(mdl,state,qvel);
 //	talon(mdl,state,qvel);
+//    trackedWarthog(mdl, state, qvel);
 
 	//also uncomment the corresponding scene function below!
 
@@ -1471,10 +1472,10 @@ void test_simulate() {
 	//terrain
 	SurfaceVector surfs;
 
-	//flat(surfs);
+	flat(surfs);
 	//ramp(surfs); //must also uncomment flat
 
-	grid(surfs, ResourceDir() + std::string("gridsurfdata.txt") );
+//	grid(surfs, ResourceDir() + std::string("gridsurfdata.txt") );
 
 	//init contact geometry
 	WheelContactGeom wcontacts[WmrModel::MAXNW];
