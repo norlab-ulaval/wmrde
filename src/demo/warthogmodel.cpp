@@ -188,17 +188,11 @@ void warthogController(const WmrModel& mdl, const Real time, const Real state[],
 //	int S2_fi = 8;
 
 	//for indexing u
-	int S1_ai = 0;
-	int A1_ai = 1;
-	int A3_ai = 2;
-	int A5_ai = 3;
+	int FL_ai = 1;
+	int RL_ai = 2;
 
-	int S2_ai = 4;
-	int A2_ai = 5;
-	int A4_ai = 6;
-	int A6_ai = 7;
-
-
+	int FR_ai = 4;
+	int RR_ai = 5;
 
 	Real speed,turnrad; //commanded speed, turn radius
 
@@ -257,13 +251,11 @@ void warthogController(const WmrModel& mdl, const Real time, const Real state[],
 //	u[S1_ai] = 1/tc*(gamma_l - state[TOSTATEI(S1_fi)]);
 //	u[S2_ai] = 1/tc*(gamma_r - state[TOSTATEI(S2_fi)]);
 
-	u[A1_ai] = vfl/Wr;
-	u[A3_ai] = vbl/Wr;
-	u[A5_ai] = vbl/Wr;
+	u[FL_ai] = vfl/Wr;
+	u[RL_ai] = vbl/Wr;
 
-	u[A2_ai] = vfr/Wr;
-	u[A4_ai] = vbr/Wr;
-	u[A6_ai] = vbr/Wr;
+	u[RL_ai] = vfr/Wr;
+	u[RR_ai] = vbr/Wr;
 
 	if (qvel_cmd != 0) { //not null
 

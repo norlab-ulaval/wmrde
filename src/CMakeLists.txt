@@ -104,11 +104,12 @@ SET(SRCS
   eigensolve.cpp
   kinematics.cpp
   main.cpp
-  predict.cpp
+#  predict.cpp
   state.cpp
   test.cpp
   wheelgroundcontact.cpp
   WmrModel.cpp  
+  predictor.cpp
 )
 
 set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}") #added by Neal
@@ -126,7 +127,8 @@ include_directories(
  
 #add_executable(OgreApp WIN32 ${HDRS} ${SRCS})
 add_executable(OgreApp WIN32 ${SRCS})
-add_executable(main main.cpp predict predict.cpp ${SRCS})
+add_executable(main main.cpp ${SRCS})
+#add_executable(predict predict.cpp ${SRCS})
 
 set_target_properties(OgreApp PROPERTIES DEBUG_POSTFIX _d)
  

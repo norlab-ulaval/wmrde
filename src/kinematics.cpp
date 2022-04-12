@@ -95,7 +95,7 @@ int trackJacobians(const WmrModel& mdl, const HomogeneousTransform HT_world[], c
 	int nc = 3*npic; //number of constraints (rows of A)
 	int row = 0; //row in A
 	
-	setMat(nc,nv,0.0,A); //init to zeros SEEMS TO RESET CONTACT POINTS WHEN USING 4 TRACKS
+	setMat(nc,nv,0.0,A); //init to zeros
 
 	//for indexing spatial vectors
 	const int ang = 0;
@@ -295,8 +295,8 @@ void forwardVelKin(const WmrModel& mdl, const Real state[], const Real u[], cons
 
 
 	//DEBUGGING
-	//std::cout << "A=\n"; printMatReal(nc,nv,A,-1,-1); std::cout << std::endl;
-	//std::cout << "v=\n"; printMatReal(nc,1,v,-1,-1); std::cout << std::endl;
+//	std::cout << "A=\n"; printMatReal(nc,nv,A,-1,-1); std::cout << std::endl;
+//	std::cout << "v=\n"; printMatReal(nc,1,v,-1,-1); std::cout << std::endl;
 
 
 	//actuated (or fixed) joint rates
@@ -363,7 +363,7 @@ void forwardVelKin(const WmrModel& mdl, const Real state[], const Real u[], cons
 	}
 
 	//DEBUGGING
-	//std::cout << "qvel=\n"; printMatReal(nv,1,qvel,-1,-1); std::cout << std::endl;
+//	std::cout << "qvel=\n"; printMatReal(nv,1,qvel,-1,-1); std::cout << std::endl;
 
 	if (vc != 0) {
 		//output contact point velocities wrt ground
@@ -427,7 +427,7 @@ void updateModelContactGeom(const WmrModel& mdl, const SurfaceVector& surfaces, 
 	}		
 }
 
-void odeKin(const Real time, const Real y[], const WmrModel& mdl, const SurfaceVector& surfaces, ContactGeom* contacts, //inputs
+void odeKin(const Real time, const Real y[], const WmrModel& mdl, const SurfaceVector& surfaces, ContactGeom* contacts, ControllerIO& u, //inputs
 	Real ydot[], HomogeneousTransform HT_parent[] ) { //outputs
 
 	const int MAXNV = NUMQVEL(WmrModel::MAXNF);
@@ -436,8 +436,8 @@ void odeKin(const Real time, const Real y[], const WmrModel& mdl, const SurfaceV
 	const int nf = mdl.get_nf();
 
 	//get control inputs
-	Real u[WmrModel::MAXNA];
-	mdl.controller(mdl, time, y, u, 0);
+//	Real u[WmrModel::MAXNA];
+//	mdl.controller(mdl, time, y, u.cmd, 0);
 
 	//convert state to Homogeneous Transforms
 	HomogeneousTransform HT_world[WmrModel::MAXNF];
@@ -448,7 +448,7 @@ void odeKin(const Real time, const Real y[], const WmrModel& mdl, const SurfaceV
 	
 	//compute joint space velocity
 	Real qvel[MAXNV];
-	forwardVelKin(mdl,y,u,HT_world,contacts,qvel,0);
+	forwardVelKin(mdl,y,u.cmd,HT_world,contacts,qvel,0);
 
 	//convert to time derivative of state
 	qvelToQdot(nf,qvel,y+SI_ORIENT,HT_world[0],ydot);
@@ -633,7 +633,7 @@ void initTerrainContact( const WmrModel mdl, const SurfaceVector& surfaces, Cont
 		int nfree=0;
 		for (int si=0; si < ns; si++) { //state index
 			if (isfree[si]) {
-                std::cout << si << std::endl;
+//                std::cout << si << std::endl;
 				copyMatCol(ne,si,derr_dstate, nfree,derr_dx);
 				nfree++;
 			}
@@ -645,12 +645,12 @@ void initTerrainContact( const WmrModel mdl, const SurfaceVector& surfaces, Cont
 		}
 
 		//DEBUGGING
-		std::cout << "A=\n"; printMatReal(ncc,nv,A,-1,-1); std::cout << std::endl;
-		std::cout << "Jc=\n"; printMatReal(njc,nj,Jc,-1,-1); std::cout << std::endl;
-		std::cout << "derrdot_dqvel=\n"; printMatReal(ne,nv,derrdot_dqvel,-1,-1); std::cout << std::endl;
-		std::cout << "derr_dstate=\n"; printMatReal(ne,ns,derr_dstate,-1,-1); std::cout << std::endl;
-		std::cout << "derr_dx=\n"; printMatReal(ne,nfree,derr_dx,-1,-1); std::cout << std::endl;
-		std::cout << "grad_=\n"; printMatReal(1,nfree,grad_,-1,-1); std::cout << std::endl;
+//		std::cout << "A=\n"; printMatReal(ncc,nv,A,-1,-1); std::cout << std::endl;
+//		std::cout << "Jc=\n"; printMatReal(njc,nj,Jc,-1,-1); std::cout << std::endl;
+//		std::cout << "derrdot_dqvel=\n"; printMatReal(ne,nv,derrdot_dqvel,-1,-1); std::cout << std::endl;
+//		std::cout << "derr_dstate=\n"; printMatReal(ne,ns,derr_dstate,-1,-1); std::cout << std::endl;
+//		std::cout << "derr_dx=\n"; printMatReal(ne,nfree,derr_dx,-1,-1); std::cout << std::endl;
+//		std::cout << "grad_=\n"; printMatReal(1,nfree,grad_,-1,-1); std::cout << std::endl;
 	};
 
 //    std::cout << 9 << std::endl;

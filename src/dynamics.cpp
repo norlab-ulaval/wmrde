@@ -767,7 +767,7 @@ void forwardDynForceBalance(const WmrModel& mdl, const Real state0[], const Real
 }
 
 
-void odeDyn(const Real time, const Real y[], const WmrModel& mdl, const SurfaceVector& surfaces, ContactGeom* contacts, const Real dt, //inputs
+void odeDyn(const Real time, const Real y[], const WmrModel& mdl, const SurfaceVector& surfaces, ContactGeom* contacts, const Real dt, ControllerIO u, //inputs
 	Real ydot[], HomogeneousTransform HT_parent[] ) { //outputs
 
 	const int MAXNS = NUMSTATE(WmrModel::MAXNF);
@@ -781,7 +781,7 @@ void odeDyn(const Real time, const Real y[], const WmrModel& mdl, const SurfaceV
 	const int nv = NUMQVEL(nf);
 	const Frame* frames = mdl.get_frames();
 	
-	ControllerIO u;
+//	ControllerIO u;
 
 	//parse y
 	Real state[MAXNS];
@@ -793,6 +793,7 @@ void odeDyn(const Real time, const Real y[], const WmrModel& mdl, const SurfaceV
 
 	//get control inputs
 	mdl.controller(mdl, time, y, u.cmd, 0);
+    // TODO: Modify this to fetch control inputs from an array
 
 	//convert state to Homogeneous Transforms
 	HomogeneousTransform HT_world[WmrModel::MAXNF];
@@ -826,5 +827,4 @@ void odeDyn(const Real time, const Real y[], const WmrModel& mdl, const SurfaceV
 	copyVec(ns,statedot,ydot);
 	copyVec(nv,qacc,ydot+ns);
 	copyVec(na,u.err,ydot+ns+nv);
-
 }

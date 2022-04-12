@@ -1531,12 +1531,13 @@ void test_simulate() {
 
 	std::cout << "state(" << time << ")=\n"; printMatReal(ns,1,y,-1,-1); std::cout << std::endl;
 
+    ControllerIO u;
 	for (int i=0; i<nsteps; i++) {
 
 		if (do_dyn) {
-			odeDyn(time, y, mdl, surfs, contacts, dt, ydot, HT_parent);
+			odeDyn(time, y, mdl, surfs, contacts, dt, u, ydot, HT_parent);
 		} else {
-			odeKin(time, y, mdl, surfs, contacts, ydot, HT_parent);
+			odeKin(time, y, mdl, surfs, contacts, u, ydot, HT_parent);
 		}
 		addmVec(ny,ydot,dt,y);
 		time += dt;
@@ -1582,9 +1583,9 @@ void test_simulate() {
 
 			for (int i=0; i<nsteps; i++) {
 				if (do_dyn) {
-					odeDyn(time, y, mdl, surfs, contacts, dt, ydot, HT_parent);
+					odeDyn(time, y, mdl, surfs, contacts, dt, u, ydot, HT_parent);
 				} else {
-					odeKin(time, y, mdl, surfs, contacts, ydot, HT_parent);
+					odeKin(time, y, mdl, surfs, contacts, u, ydot, HT_parent);
 				}
 				addmVec(ny,ydot,dt,y);
 				time += dt;

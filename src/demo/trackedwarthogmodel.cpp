@@ -108,14 +108,15 @@ void trackedWarthog(WmrModel& mdl, Real state[], Real qvel[]) {
 	//FOR KINEMATIC SIM
 	mdl.min_npic = 1;
 
-	//contact height error
-	setVec(nt,-.01,mdl.dz_target);
-	setVec(nt,.1,mdl.tc_z);
+    //contact height error
+    setVec(nt,-.01,mdl.dz_target);
+    setVec(nt,.1,mdl.tc_z);
+    mdl.tc_j[0] = .1;
 
 	//FOR DYNAMIC SIM
 	mdl.wheelGroundContactModel = uniformWgc;
 
-	int npflat = 1;
+	int npflat = 3;
 	Real Kp = TotalMass*mdl.grav/(nt*npflat*-mdl.dz_target[0]);
 	setWgcParams(Kp,mdl.wgc_p);
 
@@ -123,7 +124,6 @@ void trackedWarthog(WmrModel& mdl, Real state[], Real qvel[]) {
 	mdl.act_p[0] = 2e3; //Kp
 	mdl.act_p[1] = 0.0; //Ki
 	mdl.act_p[2] = REALMAX; //max
-
 
 	//ODE contact model parameters
 	Real erp,cfm;
@@ -142,7 +142,7 @@ void trackedWarthog(WmrModel& mdl, Real state[], Real qvel[]) {
 
 	//initialize the state vector
 	setEuler(DEGTORAD(0),DEGTORAD(0),DEGTORAD(0),euler);
-    setVec3(0.0, 0.0, (k3), pos);
+    setVec3(0.0, 0.0, (1.0), pos);
 
 #if WMRSIM_USE_QUATERNION
 	eulerToQuat(euler,orient);
@@ -168,52 +168,63 @@ void trackedWarthog(WmrModel& mdl, Real state[], Real qvel[]) {
 
 
 void trackedWarthogController(const WmrModel& mdl, const Real time, const Real state[], //inputs
-					Real u[], Real qvel_cmd[]) { //outputs
+                     Real u[], Real qvel_cmd[]) { //outputs
 
-	const Real intom = 2.54/100;
+    const Real intom = 2.54/100;
 
-	//dimensions
+    //dimensions
+    const Real k1 = 0;		            //forward offset between (R)over reference to (D)ifferential
+    const Real k2 = 0.5826;	            //horizontal offset between R and D
+    const Real k3 = 0.24979 + 0.27218;	//height of R from D
+    const Real k4_front = 0.457367 - 0.24046; //forward distance between D and tracks
+    const Real k4_rear = 0.457367 + 0.24046; //forward distance between D and tracks
+    const Real k5 = 0;		            //horizontal distance between D and tracks
+    const Real k6_front = 0.012977 + 0.20887; //height from D to tracks
+    const Real k6_rear = 0.012977 + 0.18336; //height from D to tracks
+
+
     const int nt=4; //number of tracks
     const Real rad_rear = 0.293; //sprocket radius
     const Real rad_front = 0.344; //sprocket radius
     const Real Wt = 0.2794; //width of track
     const Real Lt = 0.24046 + 0.43101; // track length
 
-    //masses (kg)
-    const Real Mb = 100;	//mass of body
-    const Real Md = 50;     //mass of differential
-    const Real Mt = 30;		//mass of track
 
-	Real speed, omega; //commanded speed, yaw rate
+    const Real B = 2*(k2+k5);
+    const Real rad_sprocket = 0.175;
 
-	speed = 0.5;
-	omega = 0;
+    Real speed, omega; //commanded speed, yaw rate
 
-	Real vl, vr; //vel left, vel right (m/s)
+    speed = 0.5;
+    omega = 0;
 
-	vl = speed - (Wt/2)*omega;
-	vr = speed + (Wt/2)*omega;
+    Real vl, vr; //vel left, vel right (m/s)
 
-	u[0] = vl/rad_front;
-	u[1] = vr/rad_front;
+    vl = speed - (B/2)*omega;
+    vr = speed + (B/2)*omega;
 
-	
-	if (qvel_cmd != 0) { //not null
+    u[0] = vl/rad_sprocket;
+    u[1] = vl/rad_sprocket;
+    u[2] = vr/rad_sprocket;
+    u[3] = vr/rad_sprocket;
 
-		//get from WmrModel
-		int nv = NUMQVEL(mdl.get_nf());
-		const int nt = mdl.get_nt();
-		const int* sprocketframeinds = mdl.get_sprocketframeinds();
 
-		setVec(nv, 0.0, qvel_cmd);
-		qvel_cmd[VI_ANG + 2] = omega;
-		qvel_cmd[VI_LIN + 0] = speed;
+    if (qvel_cmd != 0) { //not null
 
-		//sprocket velocities
-		for (int i=0; i<nt; i++)
-			qvel_cmd[TOQVELI(sprocketframeinds[i])] = u[i];
-		
-	}
+        //get from WmrModel
+        int nv = NUMQVEL(mdl.get_nf());
+        const int nt = mdl.get_nt();
+        const int* sprocketframeinds = mdl.get_sprocketframeinds();
+
+        setVec(nv, 0.0, qvel_cmd);
+        qvel_cmd[VI_ANG + 2] = omega;
+        qvel_cmd[VI_LIN + 0] = speed;
+
+        //sprocket velocities
+        for (int i=0; i<nt; i++)
+            qvel_cmd[TOQVELI(sprocketframeinds[i])] = u[i];
+
+    }
 }
 
 void trackedWarthogConstraints( const WmrModel& mdl, const Real jd[], const Real jr[], //inputs

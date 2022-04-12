@@ -28,16 +28,6 @@ public:
 	Real all[MAXNC * MAXNV];
 };
 
-class ControllerIO {
-public:
-	//input
-	Real cmd[WmrModel::MAXNA]; //commanded
-	Real interr[WmrModel::MAXNA]; //integrated error
-	//output
-	Real err[WmrModel::MAXNA]; //error: commanded - actual
-};
-
-
 void subtreeInertias(const WmrModel &mdl, const Mat6b Xup[], Mat6b Is_subt[]);
 void jointSpaceInertia( const WmrModel& mdl, const Mat6b Xup[], const Mat6b Is_subt[], Real H[] );
 void jointSpaceBiasForce(const WmrModel& mdl, const Mat6b Xup[], const Real qvel[], Real C[]);
@@ -67,7 +57,7 @@ void forwardDynForceBalance(const WmrModel& mdl, const Real state0[], const Real
 
 //TODO forwardDynUnc()
 
-void odeDyn(const Real time, const Real y[], const WmrModel& mdl, const SurfaceVector& surfaces, ContactGeom* contacts, const Real dt, //inputs
+void odeDyn(const Real time, const Real y[], const WmrModel& mdl, const SurfaceVector& surfaces, ContactGeom* contacts, const Real dt, ControllerIO u, //inputs
 	Real ydot[], HomogeneousTransform HT_parent[]); //outputs
 
 #endif //_WMRDE_DYNAMICS_H_
