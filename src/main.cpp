@@ -59,8 +59,17 @@ int main(int argc, char *argv[]) //use this for console output
     std::array<float, predictor.MAXNY> pred_y_array;
 
     pred_y_array = predictor.predict(y_array, u_array, ydot_array);
+    std::cout << "y: ";
     for (size_t i = 0; i < 12; i++) {
-        std::cout << pred_y_array[i] << ' ';
+        std::cout << y_array[i] << ", ";
+    }
+    std::cout << std::endl << "y_dot: ";
+    for (size_t i = 0; i < 12; i++) {
+        std::cout << ydot_array[i] << ", ";
+    }
+    std::cout << std::endl << "y_pred: ";
+    for (size_t i = 0; i < 12; i++) {
+        std::cout << pred_y_array[i] << ", ";
     }
 
 	
