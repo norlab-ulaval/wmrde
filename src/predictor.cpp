@@ -124,3 +124,8 @@ std::array<float, Predictor::MAXNY> Predictor::predict(std::array<float, Predict
     return y_array;
 }
 
+PYBIND11_MODULE(wmrde, m) {
+  py::class_<Predictor>(m, "Predictor")
+    .def(py::init<>())
+    .def("predict", &Predictor::predict, py::arg("y"), py::arg("u"), py::arg("y_dot"), py::arg("dt")=0.05);
+}
