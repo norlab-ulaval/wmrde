@@ -21,6 +21,7 @@ void trackedWarthog(WmrModel& mdl, Real state[], Real qvel[]) {
     const int nt=4; //number of tracks
     const Real rad_rear = 0.293; //sprocket radius
     const Real rad_front = 0.344; //sprocket radius
+//    const Real rad_front = 0.175; //sprocket radius
     const Real Wt = 0.2794; //width of track
     const Real Lt = 0.24046 + 0.43101; // track length
 
