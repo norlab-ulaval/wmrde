@@ -80,6 +80,7 @@ set(CMAKE_INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}/dist")
 #)
 
 SET(SRCS
+  predictor.cpp
   algebra/matrix.cpp
   algebra/spatial.cpp
   algebra/transform.cpp
@@ -103,17 +104,16 @@ SET(SRCS
   dynamics.cpp
   eigensolve.cpp
   kinematics.cpp
-  main.cpp
 #  predict.cpp
   state.cpp
   test.cpp
   wheelgroundcontact.cpp
   WmrModel.cpp  
-  predictor.cpp
 )
 
 set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}") #added by Neal
 find_package(Eigen3 REQUIRED) #added by Neal
+find_package(pybind11 REQUIRED)
 
 include_directories( 
   ../include #added by Neal
@@ -124,28 +124,31 @@ include_directories(
   ${EIGEN3_INCLUDE_DIR} #added by Neal
 #  /usr/local/include #added by Neal, TODO /ode necessary?
 )
+include_directories(${PYTHON_INCLUDE_DIRS} ${HOME}/.local/include/pybind11/)
  
 #add_executable(OgreApp WIN32 ${HDRS} ${SRCS})
-add_executable(OgreApp WIN32 ${SRCS})
+#add_executable(OgreApp WIN32 ${SRCS})
 add_executable(main main.cpp ${SRCS})
 #add_executable(predict predict.cpp ${SRCS})
 
-set_target_properties(OgreApp PROPERTIES DEBUG_POSTFIX _d)
+#set_target_properties(OgreApp PROPERTIES DEBUG_POSTFIX _d)
  
-target_link_libraries(OgreApp ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${OGRE_Overlay_LIBRARIES}
+#target_link_libraries(OgreApp ${OGRE_LIBRARIES} ${OIS_LIBRARIES} ${OGRE_Overlay_LIBRARIES}
 #  /usr/local/lib/libode.a #added by Neal
-) 
+#pybind11::embed
+#) 
+target_link_libraries(main pybind11::embed)
  
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/bin)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/dist/media)
  
 # post-build copy for win32
-if(WIN32 AND NOT MINGW)
-	add_custom_command( TARGET OgreApp PRE_BUILD
-		COMMAND if not exist .\\dist\\bin mkdir .\\dist\\bin )
-	add_custom_command( TARGET OgreApp POST_BUILD
-		COMMAND copy \"$(TargetPath)\" .\\dist\\bin )
-endif(WIN32 AND NOT MINGW)
+#if(WIN32 AND NOT MINGW)
+#	add_custom_command( TARGET OgreApp PRE_BUILD
+#		COMMAND if not exist .\\dist\\bin mkdir .\\dist\\bin )
+#	add_custom_command( TARGET OgreApp POST_BUILD
+#		COMMAND copy \"$(TargetPath)\" .\\dist\\bin )
+#endif(WIN32 AND NOT MINGW)
 
 if(MINGW OR UNIX)
 	set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/dist/bin)
@@ -154,10 +157,9 @@ endif(MINGW OR UNIX)
 
 
 if(UNIX)
- 
-	install(TARGETS OgreApp
-		RUNTIME DESTINATION bin
-		CONFIGURATIONS All)
+  #	install(TARGETS OgreApp
+  #		RUNTIME DESTINATION bin
+  #		CONFIGURATIONS All)
  
 	install(DIRECTORY ${CMAKE_SOURCE_DIR}/dist/media
 		DESTINATION ./
@@ -172,3 +174,6 @@ if(UNIX)
  
 endif(UNIX)
  
+#PYTHON BINDINGS
+pybind11_add_module(wmrde ${SRCS})
+#---------------
