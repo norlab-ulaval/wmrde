@@ -427,6 +427,7 @@ void updateModelContactGeom(const WmrModel& mdl, const SurfaceVector& surfaces, 
 	}		
 }
 
+
 void odeKin(const Real time, const Real y[], const WmrModel& mdl, const SurfaceVector& surfaces, ContactGeom* contacts, ControllerIO& u, //inputs
 	Real ydot[], HomogeneousTransform HT_parent[] ) { //outputs
 

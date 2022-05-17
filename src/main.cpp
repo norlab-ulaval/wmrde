@@ -76,6 +76,14 @@ int main(int argc, char *argv[]) //use this for console output
     std::string path = "/home/dominic/Desktop/elevation_maps/elevation/1651006607202891000.csv";
     MatrixXr elevationMap;
     elevationMap = predictor.load_csv(path);
+
+    SurfaceVector surfs;
+    flat(surfs);
+
+    std::cout << std::endl;
+
+//    std::cout << surfs[0]->surfaceNormal(0,0,0);
+    
 	
 	std::cin.get();
 }

@@ -194,10 +194,10 @@ void warthogController(const WmrModel& mdl, const Real time, const Real state[],
 	int FR_ai = 4;
 	int RR_ai = 5;
 
-	Real speed,turnrad; //commanded speed, turn radius
+	Real speed,omega; //commanded speed, turn radius
 
 	speed = 0.5;
-	turnrad = 1000;
+	omega = 0.5;
 
 	
 	//if (time < 2.0) {
@@ -211,67 +211,49 @@ void warthogController(const WmrModel& mdl, const Real time, const Real state[],
 	//	turnrad = 3.0;
 	//}
 
-	Real omega, gamma_l, gamma_r, vbl, vbr, vfl, vfr;
+    const Real B = 2*(k2+k5);
+//    const Real rad_sprocket = 0.175;
 
-	if (fabs(turnrad) >= 1000) {
-		omega = 0.0;
+    speed = 0.5;
+    omega = 0;
 
-		gamma_l = 0.0;
-		gamma_r = 0.0;
+    Real vl, vr; //vel left, vel right (m/s)
 
-		vbl = speed;
-		vbr = speed;
-		vfl = speed;
-		vfr = speed;
+    vl = speed - (B/2)*omega;
+    vr = speed + (B/2)*omega;
 
-	} else {
-		omega = speed/turnrad; //yaw rate
-
-		//steer angles
-		gamma_l = atan(L/(turnrad-w));
-		gamma_r = atan(L/(turnrad+w));
-
-		//steering limits
-		Real lim = DEGTORAD(60);
-		if (fabs(gamma_l) > lim)
-			gamma_l = REALSIGN(gamma_l)*lim;
-		if (fabs(gamma_r) > lim)
-			gamma_r = REALSIGN(gamma_r)*lim;
-
-		//wheel velocities
-		//TODO, CHECK THIS!
-		vbl = speed - omega*w; //back left
-		vbr = speed + omega*w; //back right
-		vfl = (speed - omega*w)*cos(gamma_l) + omega*L*sin(gamma_l); //front left
-		vfr = (speed + omega*w)*cos(gamma_l) + omega*L*sin(gamma_l); //front right
-	}
+    u[0] = vl/Wr;
+    u[1] = vl/Wr;
+    u[2] = vr/Wr;
+    u[3] = vr/Wr;
 
 	//set u
 	Real tc = .2;
 //	u[S1_ai] = 1/tc*(gamma_l - state[TOSTATEI(S1_fi)]);
 //	u[S2_ai] = 1/tc*(gamma_r - state[TOSTATEI(S2_fi)]);
 
-	u[FL_ai] = vfl/Wr;
-	u[RL_ai] = vbl/Wr;
+//	u[FL_ai] = vfl/Wr;
+//	u[RL_ai] = vbl/Wr;
+//
+//	u[RL_ai] = vfr/Wr;
+//	u[RR_ai] = vbr/Wr;
 
-	u[RL_ai] = vfr/Wr;
-	u[RR_ai] = vbr/Wr;
+    if (qvel_cmd != 0) { //not null
 
-	if (qvel_cmd != 0) { //not null
+        //get from WmrModel
+        int nv = NUMQVEL(mdl.get_nf());
+        const int nt = mdl.get_nt();
+        const int* wheelframeinds = mdl.get_wheelframeinds();
 
-		//get from WmrModel
-		const int nv = NUMQVEL(mdl.get_nf());
-		const int na = mdl.get_na();
-		const int* actframeinds = mdl.get_actframeinds();
+        setVec(nv, 0.0, qvel_cmd);
+        qvel_cmd[VI_ANG + 2] = omega;
+        qvel_cmd[VI_LIN + 0] = speed;
 
-		setVec(nv, 0.0, qvel_cmd);
-		qvel_cmd[VI_ANG + 2] = omega;
-		qvel_cmd[VI_LIN + 0] = speed;
+        //sprocket velocities
+        for (int i=0; i<nt; i++)
+            qvel_cmd[TOQVELI(wheelframeinds[i])] = u[i];
 
-		//wheel velocities
-		for (int i=0; i<na; i++)
-			qvel_cmd[TOQVELI(actframeinds[i])] = u[i];
-	}
+    }
 }
 
 

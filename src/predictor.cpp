@@ -7,8 +7,8 @@ Predictor::Predictor()
 //	zoe(mdl,state,qvel);
 //    rocky(mdl,state,qvel);
 //	talon(mdl,state,qvel);
-//    warthog(mdl, state, qvel);
-    trackedWarthog(mdl, state, qvel);
+    warthog(mdl, state, qvel);
+//    trackedWarthog(mdl, state, qvel);
 
     //initialize wheel-ground contact model
     mdl.wheelGroundContactModel(0, mdl.wgc_p, 0, 0, 0, //inputs

@@ -27,6 +27,7 @@ void forwardVelKin(const WmrModel& mdl, const Real state[], const Real u[], cons
 void updateModelContactGeom(const WmrModel& mdl, const SurfaceVector& surfaces, const HomogeneousTransform HT_world[], const int min_npic, //inputs
 	ContactGeom* contacts); //outputs
 
+
 void odeKin(const Real time, const Real y[], const WmrModel& mdl, const SurfaceVector& surfaces, ContactGeom* contacts, ControllerIO& u, //inputs
 	Real ydot[], HomogeneousTransform HT_parent[]); //outputs
 
