@@ -2,6 +2,23 @@
 #include <wmrde/predictor.h>
 //#include <wmrde/ode/test_ode.h>
 
+MatrixXr load_csv (const std::string & path) {
+    std::ifstream indata;
+    indata.open(path);
+    std::string line;
+    std::vector<double> values;
+    uint rows = 0;
+    while (std::getline(indata, line)) {
+        std::stringstream lineStream(line);
+        std::string cell;
+        while (std::getline(lineStream, cell, ',')) {
+            values.push_back(std::stod(cell));
+        }
+        ++rows;
+    }
+    return Eigen::Map<const Eigen::Matrix<typename MatrixXr ::Scalar, MatrixXr ::RowsAtCompileTime, MatrixXr ::ColsAtCompileTime, Eigen::RowMajor>>(values.data(), rows, values.size()/rows);
+}
+
 //int main()
 int main(int argc, char *argv[]) //use this for console output
 {
@@ -72,6 +89,12 @@ int main(int argc, char *argv[]) //use this for console output
         std::cout << pred_y_array[i] << ", ";
     }
 
+
+    std::string path = "/home/dominic/Desktop/elevation_maps/elevation/1651006607202891000.csv";
+    MatrixXr elevationMap;
+    elevationMap = load_csv(path);
+
+    std::cout << std::endl << elevationMap(116,18);
 	
 	std::cin.get();
 }

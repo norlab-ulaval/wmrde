@@ -115,6 +115,7 @@ set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}") #added by Neal
 find_package(Eigen3 REQUIRED) #added by Neal
 find_package(pybind11 REQUIRED)
 
+
 include_directories( 
   ../include #added by Neal
   ${OIS_INCLUDE_DIRS}
@@ -176,4 +177,5 @@ endif(UNIX)
  
 #PYTHON BINDINGS
 pybind11_add_module(wmrde ${SRCS})
+set(PYTHON_EXECUTABLE /usr/bin/python3.8)
 #---------------
