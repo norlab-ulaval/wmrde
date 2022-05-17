@@ -71,6 +71,8 @@ public:
                                      std::array<float, Predictor::MAXNY> ydot,
                                      const Real dt=0.05);
 
+    MatrixXr load_csv (const std::string & path);
+
 };
 
 #endif //OGREAPP_PREDICTOR_H
